@@ -1,4 +1,87 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+### 项目说明
+
+* 包含视频滚动的过程中自动播放，不可见的时候自动停止
+* 可见自动播放的不包含用户手动暂停的视频
+* 随机增加三个社区类型(text,image,video) 10条
+* 基于react-native-video封装业务Video组件，自定义control
+* 基于Image封装业务加载网络图片的Image组件，默认图和加载失败图
+
+## 设计思路
+
+> FlatList的item有个统一的Item,所有item寻找共性写在统一的item，不同的根据type来取子item，可以随时扩展其他类型，需要修改单个类型的组件不同组件文件，解耦
+  
+  ```javascript
+  const ItemType = {
+    video: SocialVideoItem,
+    image: SocialImageItem,
+    text: SocialTextItem,
+  };
+  
+  const SocialItem = (props: ISocialItemProps) => {
+    const Item = ItemType[props.item.type] || SocialTextItem;
+    return (
+      <View style={styles.item}>
+        <View style={styles.contentView}>
+          <Item item={props.item} />
+        </View>
+        <View style={styles.bottom}>
+          <ItemBottomBtn source={require('../../icons/share_icon.png')} />
+          <ItemBottomBtn source={require('../../icons/like_icon.png')} hideLine />
+        </View>
+      </View>
+    );
+  };
+```
+
+
+
+> 用户滚动的过程中寻找video类型自动播放
+
+
+```javascript
+  onViewableItemsChanged={info => {
+    let findVideo = false;
+    // 刷新不显示的video停止播放
+    SingleManagerVideo().refreshVisibleItem(
+      info.viewableItems?.map(ci => {
+        if (
+          ci.item.type === 'video' &&
+          !findVideo &&
+          !SingleManagerVideo().clickStopIds.includes(ci.item.id)
+        ) {
+          // 找到可见的并且不包含用户手动点击停止播放的视频，开始自动播放
+          findVideo = true;
+          SingleManagerVideo().exeVideoPlay(ci.item.id);
+        }
+        return ci.item.id;
+      }),
+    );
+  }}
+```
+
+## 状态共享使用redux
+
+> App.tsx
+
+```javascript
+  import React from 'react';
+  import {Provider} from 'react-redux';
+  import Home from './src/pages/home';
+  import configStore from './src/store';
+  
+  function App(): React.JSX.Element {
+    return (
+      <Provider store={configStore({})}>
+        <Home />
+      </Provider>
+    );
+  }
+
+  export default App;
+
+```
+
+* 主入口在src/store，状态在src/redux里面
 
 # Getting Started
 
