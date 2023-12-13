@@ -10,7 +10,7 @@
 
 ## 设计思路
 
-> FlatList的item有个统一的Item,所有item寻找共性写在统一的item，不同的根据type来取子item，可以随时扩展其他类型，需要修改单个类型的组件不同组件文件，解耦
+> FlatList的item有个统一的Item,所有item寻找共性写在统一的item，不同的根据type来取子item，可以随时扩展其他类型，需要修改某一个item样式不会影响其他的，解耦
   
   ```javascript
   const ItemType = {
