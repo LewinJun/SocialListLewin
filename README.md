@@ -1,5 +1,7 @@
 ### 项目说明
 
+[项目演示视频](https://lewin-main.oss-cn-shanghai.aliyuncs.com/social_demo.mov)
+
 * 包含视频滚动的过程中自动播放，不可见的时候自动停止
 * 可见自动播放的不包含用户手动暂停的视频
 * 随机增加三个社区类型(text,image,video) 10条
